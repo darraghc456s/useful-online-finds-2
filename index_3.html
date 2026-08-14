@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  USEFUL ONLINE FINDS — Amazon affiliate link-in-bio page
+  ============================================================================
+  HOW TO ADD YOUR OWN PRODUCTS
+  ----------------------------
+  Scroll down to the big comment that says "EDIT YOUR PRODUCTS HERE" (inside
+  the <script> tag near the bottom of this file). Every product is one
+  {...} entry in the PRODUCTS list. Copy an existing entry, paste it as a
+  new one, and change the values:
+
+    name:     "Product name"                 -> shows as the card title
+    category: "home" | "kitchen" | "lifestyle" -> controls which filter tab it appears under
+    price:    "$24.99"                        -> shown under the name (type it exactly how you want it displayed)
+    image:    "https://...jpg"  or  ""         -> paste a product photo URL, or leave "" for a placeholder box
+    url:      "https://amzn.to/xxxxxxx"       -> YOUR Amazon affiliate link for that product
+
+  Add as many entries as you like — the page lays them out automatically.
+  Delete a product by deleting its whole {...} block.
+  ============================================================================
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Useful Online Finds — Shop My Picks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #F4F6F2;
+    --sage-pale: #CDD9C7;
+    --sage-deep: #6E7D62;
+    --text: #3E4636;
+    --text-soft: #6B7462;
+    --card-bg: #FFFFFF;
+    --border: #E1E7DC;
+  }
+
+  *{ box-sizing: border-box; }
+
+  body{
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+
+  /* ---------- header ---------- */
+  .hero{
+    background: var(--sage-pale);
+    padding: 56px 20px 40px;
+    text-align: center;
+  }
+
+  .hero-icons{
+    display:flex;
+    justify-content:center;
+    gap: 28px;
+    margin-bottom: 18px;
+    opacity: 0.85;
+  }
+  .hero-icons svg{ width:34px; height:34px; }
+
+  .hero h1{
+    font-weight: 500;
+    font-size: 30px;
+    letter-spacing: 0.5px;
+    margin: 0 0 8px;
+    color: var(--text);
+  }
+
+  .hero p{
+    font-weight: 300;
+    font-size: 15px;
+    color: var(--text-soft);
+    margin: 0 auto;
+    max-width: 420px;
+    line-height: 1.5;
+  }
+
+  /* ---------- filter tabs ---------- */
+  .filters{
+    display:flex;
+    justify-content:center;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 22px 16px 6px;
+  }
+
+  .filter-btn{
+    font-family: inherit;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+    padding: 9px 20px;
+    border-radius: 999px;
+    border: 1.5px solid var(--sage-deep);
+    background: transparent;
+    color: var(--sage-deep);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .filter-btn:hover{ background: rgba(110,125,98,0.1); }
+  .filter-btn.active{
+    background: var(--sage-deep);
+    color: #fff;
+  }
+
+  /* ---------- product grid ---------- */
+  .grid{
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px 20px 60px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 22px;
+  }
+
+  .card{
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    text-decoration: none;
+    color: inherit;
+  }
+  .card, .card:visited, .card *{
+    text-decoration: none;
+    color: inherit;
+  }
+  .card:hover{
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(62,70,54,0.08);
+  }
+
+  .card-image{
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: var(--sage-pale);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .card-image img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .placeholder-box{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    color: var(--sage-deep);
+    opacity: 0.55;
+  }
+  .placeholder-box svg{ width: 34px; height: 34px; }
+  .placeholder-box span{ font-size: 11px; letter-spacing: 0.5px; font-weight: 500; }
+
+  .card-body{
+    padding: 16px 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+  }
+
+  .card-title{
+    font-size: 14.5px;
+    font-weight: 500;
+    line-height: 1.35;
+    color: var(--text);
+    min-height: 38px;
+  }
+
+  .card-price{
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--sage-deep);
+  }
+  .card-price.unset{
+    font-size: 12px;
+    font-weight: 400;
+    font-style: italic;
+    opacity: 0.75;
+  }
+
+  .card-link{
+    margin-top: auto;
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    color: #fff;
+    background: var(--sage-deep);
+    padding: 10px 0;
+    border-radius: 10px;
+    transition: background 0.15s ease;
+  }
+  .card-link:hover{ background: #5c6952; }
+
+  .empty-state{
+    text-align:center;
+    padding: 60px 20px;
+    color: var(--text-soft);
+    font-size: 14px;
+    grid-column: 1 / -1;
+  }
+
+  /* ---------- footer / disclosure ---------- */
+  footer{
+    border-top: 1px solid var(--border);
+    padding: 28px 20px 40px;
+    text-align: center;
+  }
+  footer p{
+    max-width: 560px;
+    margin: 0 auto 6px;
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--text-soft);
+    font-weight: 300;
+  }
+  footer .brand{
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    color: var(--sage-deep);
+    margin-bottom: 10px;
+  }
+
+  @media (max-width: 480px){
+    .hero{ padding: 44px 16px 32px; }
+    .hero h1{ font-size: 25px; }
+    .grid{ grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
+  }
+</style>
+</head>
+<body>
+
+  <header class="hero">
+    <div class="hero-icons">
+      <!-- sun -->
+      <svg viewBox="0 0 100 100" fill="none" stroke="#6E7D62" stroke-width="4.5" stroke-linecap="round">
+        <circle cx="50" cy="50" r="16"/>
+        <line x1="50" y1="12" x2="50" y2="24"/>
+        <line x1="50" y1="76" x2="50" y2="88"/>
+        <line x1="12" y1="50" x2="24" y2="50"/>
+        <line x1="76" y1="50" x2="88" y2="50"/>
+        <line x1="22" y1="22" x2="30" y2="30"/>
+        <line x1="70" y1="70" x2="78" y2="78"/>
+        <line x1="78" y1="22" x2="70" y2="30"/>
+        <line x1="30" y1="70" x2="22" y2="78"/>
+      </svg>
+      <!-- pot -->
+      <svg viewBox="0 0 100 100" fill="none" stroke="#6E7D62" stroke-width="4.5" stroke-linecap="round">
+        <rect x="24" y="42" width="52" height="34" rx="8"/>
+        <ellipse cx="50" cy="42" rx="30" ry="6"/>
+        <line x1="50" y1="36" x2="50" y2="24"/>
+        <circle cx="50" cy="20" r="4"/>
+        <path d="M24 55 C14 55 14 68 22 68" />
+        <path d="M76 55 C86 55 86 68 78 68" />
+      </svg>
+      <!-- sofa -->
+      <svg viewBox="0 0 100 100" fill="none" stroke="#6E7D62" stroke-width="4.5" stroke-linecap="round">
+        <rect x="16" y="52" width="10" height="22" rx="3"/>
+        <rect x="74" y="52" width="10" height="22" rx="3"/>
+        <rect x="26" y="60" width="48" height="16" rx="3"/>
+        <rect x="22" y="34" width="56" height="30" rx="6"/>
+        <line x1="50" y1="60" x2="50" y2="76"/>
+      </svg>
+    </div>
+    <h1>Useful Online Finds</h1>
+    <p>Home, kitchen &amp; lifestyle picks I actually use — tap any product below to shop it on Amazon.</p>
+  </header>
+
+  <nav class="filters" id="filters">
+    <!-- filter buttons are generated automatically from the categories used below -->
+  </nav>
+
+  <main class="grid" id="grid">
+    <!-- product cards are generated automatically — see PRODUCTS list in the script below -->
+  </main>
+
+  <footer>
+    <div class="brand">Useful Online Finds</div>
+    <p>As an Amazon Associate, I earn from qualifying purchases. This page contains affiliate links — if you buy something through one of them, I may earn a small commission at no extra cost to you. Thank you for supporting the page!</p>
+  </footer>
+
+<script>
+/* ============================================================================
+   EDIT YOUR PRODUCTS HERE
+   ----------------------------------------------------------------------------
+   Copy/paste a { ... } block below to add a product, or delete one to
+   remove it. Fields:
+
+     name     - product title shown on the card
+     category - "home", "kitchen", or "lifestyle" (add a new word here and a
+                new filter tab will appear automatically)
+     price    - shown exactly as typed, e.g. "$19.99" — leave "" to show
+                "See price on Amazon" instead
+     image    - a direct image URL (right-click a product photo > "copy image
+                address"), or "" to show a placeholder box
+     url      - your Amazon affiliate link for this product (keep the full
+                link, including the "?tag=darraghcummin-20..." part — that's
+                what credits the sale to you)
+
+   NOTE ON THIS BATCH: these 63 products came from your "Amazon Aff link 1.xlsx"
+   upload (your full list), which — like the first file — only had a link
+   column, no name/price/photo. Amazon's robots.txt blocks automated tools
+   from reading its product pages, so I still can't pull real prices or
+   photos directly. I named every product from its Amazon URL slug and
+   search-keyword hint and made a best guess at category — please skim for
+   accuracy, especially anything that looks off. See the chat for how to get
+   real photos in (short version: reconnect the Chrome browser tool, or use
+   Amazon's official Product Advertising API if you have Associate API
+   credentials). The affiliate links themselves are exactly as you gave
+   them, untouched — 63 unique products, no duplicates.
+   ============================================================================ */
+const PRODUCTS = [
+  {
+    name: "Zevro Push-Button Cereal Dispenser",
+    category: "kitchen",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/Zevro-KCH-06123-Control-Dispenser-Chrome/dp/B00ANJDBWM?crid=1CLHZSHTGTB46&dib=eyJ2IjoiMSJ9.728pXakdC-HHR6gNvKvpbRo-qFvATLtyR2t6Xc0KdwZdBdCMzPV2PBagxH28pFiM4xbAE0PkuO3YG9sc6hDS1ZD4Wwh2Hdm5ANhdVGZWwTw7CBlbUXJch05jaQCW9UEpFyGnoI1MOslzKbn1A-PhNKYxMXGpnnGbuFHj1Nb3FE5MbCiqbX2jZB8onwlbsPPHEr3DTiBxvi5WNMLAMS2J0-3JaNtmcMx-B3yINhLKdDttZqgWzoM5kMxjOCeHw0YgTHkARpYAlI2M8IdvYK_doekdHy2h8qc66oYOiws4Pws.mFsiSLJooD0Z6FhGmnHKus7QdavhiZd-2EQDpcCJrmY&dib_tag=se&keywords=cereal+dispenser&qid=1786717407&sprefix=cereal+dispe%2Caps%2C10002&sr=8-19&gaOptInStatus=true&utm_source=Pinterest&utm_medium=organic&linkCode=ll2&tag=darraghcummin-20&linkId=b7f4365cd7638d6eb4edfee58597b1ec&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "Old Fashioned Whiskey Smoker Kit with Torch",
+    category: "lifestyle",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/Whiskey-Smoker-Kit-Torch-Fashioned/dp/B0BJV68C17?crid=14XQDRO8CVKI2&dib=eyJ2IjoiMSJ9.HCjfN0Q_Z9KzXFGW0TZJQz7-U7rZuwZeg4jXuk0b8yS_4HCe2roGH8Z8RVY9RsAy63HMuHrGBeo_DkhtGICetWUQqk1iHrqVJCitySPE79eltm8jSev6P5M33eh3OHayw5T7ktoSvj_JF7GfC8QiI5NJ6GAvrWPOBVNSBkyuE7j2giW9ZHJqC576dD1rgrquIhb2c8WRvzfNc2VzP_KCe8A9Ss3AkGXJv-b2lTfgD6fYXQJlo8-NMq6PIWnqDldEFJY3WgEB0oe2tcC1pSuS2TPIOdjwCj03jOqsvyzS2E4.vqxUPw7P116e87FgQ7S3NhxyYxwM1XBK43wYn46582I&dib_tag=se&keywords=whiskey+set&qid=1786714486&sprefix=whiskey+set%2Caps%2C246&sr=8-1-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&psc=1&gaOptInStatus=true&utm_source=Pinterest&utm_medium=organic&linkCode=ll2&tag=darraghcummin-20&linkId=0d6b90ca73af478ae301b0937dc95d55&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "NOCO XGrid Multi-Device Charging Station",
+    category: "home",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/NOCO-XGrid-XDS3-Compatible-Certified/dp/B0FJJ2NJQ4?crid=P5VMJDLM79UO&dib=eyJ2IjoiMSJ9.GryoKCY1OxktckgpchgwAk86IeHDBikyhNMe6j5ddNDYs9qvR_Oq1Xqom0FLi34e0IFlzx-wsxTRYWly3lC3vuIJJ9gn3opK8n4_KlCvh6C6GYdncdwivRfl8dBPPbtYIRISCwlo08gQNLgZs9FSomaE9hOSsWJVHN95QRT23y6sMAwy9PBZooxaKuRtd2agpmJpMRLHLFjczs1Y-bIoApDHLBsCOdobNVtoDlAHhwM.nwHY5aSVnI0Ca3izqFjrjnJMY6NTNqlKn4VhOKFN8js&dib_tag=se&keywords=charging+station+for+multiple+devices&qid=1786712943&sprefix=charging+station+for+%2Caps%2C356&sr=8-1-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&psc=1&gaOptInStatus=true&utm_source=Pinterest&utm_medium=organic&linkCode=ll2&tag=darraghcummin-20&linkId=80a3e535763138e5df3d79de214b70ba&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "Dreo Tower Fan — Bedroom Cooling",
+    category: "home",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/DREO-Tower-Bedroom-Velocity-Speeds/dp/B09MKPDJRT?crid=1IIYZ7RS2LXJZ&dib=eyJ2IjoiMSJ9.LZK5Gwib5FmBM7ydM53MWhPGld7a3VB5w5hyyRz35tvpGscH7p3IcRGyV67c9-xcbBdpCJ-nIet8dXQbFEbPIxkUQ3lJFe6wFfg5L8lBSmm1Oxsq2qDXdVISFT1NB_huITfAcleYv_cKjy9-Yl7xlo-LKYPUrcJ85K86aBXMydyfNmouDzWYKKIO3aJq0utf5hYWr2RJVFzYZaMs1kK7xwZEj_vu4uOG2LDWH9FqJZI.wAiLWs5t6NGGZAbYMl_IEjg8W7ltZ4_IiPuI0Njtsb8&dib_tag=se&keywords=air%2Bconditioning%2Bunit&qid=1786630527&sprefix=Air%2Bconditing%2Bun%2Caps%2C247&sr=8-5-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9tdGY&th=1&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=979445655071205f2e106776d1bbe62f&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "WILLBBQ Portable Charcoal BBQ Grill",
+    category: "kitchen",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/WILLBBQ-Commercial-Portable-Charcoal-31-6x7-1x5-1/dp/B0B4RQ23T4?crid=1OVQ863QZVP6S&dib=eyJ2IjoiMSJ9.aiMhhY2-FBDFNxouDc2mHeso4r7CwUTljOyOY_78q5mThmcmYyCSOjjSjSpO2aWbmDwLaHWkQXZebAOSBLI13zJ32FwZTj91lP7tTmgBEVQyiiOJhbIXeMJypiu8Wgj7ISk6667xG6zANJFxfddduPTPaEEVOcQ3rinDyh_IdgOx1N1Gfbm8V7nF7cTWuVbl.VSR0gDQ6PmjN2R6nW-yZB7x5HGpmZG9_gchkqWuILYI&dib_tag=se&keywords=open%2Bbarbeque&qid=1786630390&sprefix=open%2Bbarbarque%2Caps%2C221&sr=8-1-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&th=1&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=7e55642e504340f1f5c7dedcf1f1bf5a&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "Diatomaceous Stone Dish Drying Mat",
+    category: "kitchen",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/Mat-Collapsible-Diatomaceous-Dish-Set/dp/B0G1CYSS2T?crid=2A01791ER10M5&dib=eyJ2IjoiMSJ9.IAdH1YwxGhDIDdqDLi35mqS9OyM7gr0HsjxTYxOBThGzC7jWGaWvrnjKSsO_ijBM8s7qU11tymdRNwditLfBAjoSylx5s4RH30TSlIW86XQECVwlJLuOH0VXysOGRdg6SU0cMqFKpcmt2MMSZPdtfWGvc1yKbEwD3f2Z1rBnWrPMHB2j6Aru0WouY9vcO4MY9DGzUdA97cQg1jTDouxj2I6TS44n9B3soGDlOOKKR2vyII-eXEhPMJiWNSzGWYeOeyzfqG9eVEEuA0u02BsmT8SK-SPysFkKLD-9GI72pRw.bjkR9Xyqi2nVc3BC9B4JC9VT_qL2CjKtOgV1alAyh4Y&dib_tag=se&keywords=stone%2Bfaucet%2Bmat&qid=1786545731&sprefix=stone%2Bfaucet%2Bmat%2Caps%2C271&sr=8-1-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&th=1&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=8f48d651587c5713b95aac13f3e1bd25&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "Expandable Dining Table — Apartment Size",
+    category: "home",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/DONGMUWUJEE-Expandable-Designed-Assembly-Apartment/dp/B0FMNKCKG2?crid=2CG4SG7QKR2EB&dib=eyJ2IjoiMSJ9.C7amCPQmPaPB2OZMZCtmHjYj7dOGxFn_QdegyRvt22fmbmytH_e7u59v-v4DZz2uA0l_A2Ok3SmQJ-2ZGLYdzCPXp2jYO0JN7yyOChSLw2ZSMdVsI8ay03QBgh0sMdom3G7rapgD4ZhZqd_BDv3C8K3yHYIVuNznhEyeD94ufIDQHJS00ZeBoRbKPJRXroqUQAm2UgxP9olsk1pyoNsF5BSdzqzOJkwK06yqzl6Y4b7zgVf_KdjCdFcdtGB6kec4F0MYa2uj50xhq5FkeluHeQN8toMpHNNppRYE-b3VqwQ.PZVH4P9v_8KMv6RpvIsUUPBENDdhVoLEfC3sINiVahs&dib_tag=se&keywords=expanding%2Bdining%2Btable&qid=1786545526&sprefix=expanding%2Bdinner%2B%2Caps%2C209&sr=8-1-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&th=1&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=a9c947c2037d851e0a56552a9ba65d6f&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "GravaStar K1 Pro Mechanical Keyboard",
+    category: "lifestyle",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/GravaStar-K1-Pro-Phoenix-Inspired-Hot-Swappable/dp/B0F66LBBLW?crid=3DNCQS3087K03&dib=eyJ2IjoiMSJ9.BZykHbBQ7g6_0epBdHQuRVXOCTlJw1nnprKEd2lu3Q0w9VRK8dCEiH_DJrPMoMUqTsz7Y4zriu0BKFOalI7hpUpTGQCRuYYvoXaki7cSE6QjheT6bD0L3lzJYO6MbmGqMg5J-rbqIpI6GljDXsPdIqsOgLvnptvyT3nC6cmKew-70o5brDHgcKuu6A_Xcqig8FVNRdeeLVAsKSDtsZ8nZZiDDaMp5cyJ3p0YshnfG4I.79y_K2yb_fWkANyTBdX3GjLqCSlw80JeDtXlUMzIEag&dib_tag=se&keywords=cool%2Bkeyboard&qid=1786630170&sprefix=cool%2Bkeyboard%2Caps%2C225&sr=8-5-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9tdGY&th=1&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=3a70dc8986a3c14b3900d01fcd1dbcd6&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "PhoneSoap UV-C Phone Sanitizer",
+    category: "lifestyle",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/PhoneSoap-Sanitizer-Universal-Patented-Clinically/dp/B071KGVLBB?crid=12Y8ZUKXH73FP&dib=eyJ2IjoiMSJ9.LlwU9aLzoFQ8w3Xewo2CQqj5lemgM8vrgDRoxuG-9g1um9qzcc0r7kA1J714UMeVPCZ_7sdQu98nQM8OVBOOzwqXv2MxaxuwMswVhaPrHdC__WlG2zbiGmLkaXU-QKuuHcXJ-kfErFFNq3EOXc94AwndKYzGjA_w8BlCPfu-lUorW4Rt9_SKJ-_NNtdK4ix-_uOoTn3vUjRkpQ_m_Bz9ndgcVZSGtIkYW3VbwXjutwM.53hSRf45w_tl5JlhI82tmnfw5bMvY3hhPneinSaWeAA&dib_tag=se&keywords=UV-C%2Blight%2Bphone%2Bcleaner&qid=1786464895&sprefix=uv-c%2Blight%2Bphone%2Bcleaner%2Caps%2C259&sr=8-2-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&th=1&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=c573dd1a17826048283c1dd887cbca0b&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "Compact Portable Mini Fridge / Cooler",
+    category: "home",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/Essential-Cooler-Classic-Compact-Portable/dp/B0H53CLZ1L?crid=D0XDXXAMGEMK&dib=eyJ2IjoiMSJ9.x5ySMAcoHmNihEBvQwAcfg.8kNeT_G_4locMHAa4BL99tUdM3yoeC90Jvvss-ypY4c&dib_tag=se&keywords=rocco%2Bsmart%2Bfridge&qid=1786545240&sprefix=Rocco%2Bsma%2Caps%2C213&sr=8-1-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&th=1&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=802942ec6373d0bfe1def5f8a9396dd8&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "Mid-Century Modern Shower Curtain Set",
+    category: "home",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/Shower-Curtain-Century-Modern-Bathroom/dp/B0GRTTHTYM?crid=3QFDP8PN3C0QI&dib=eyJ2IjoiMSJ9.dcjlTnGm_O1eSoMYM6ugOA9piemILYLDFHb9TO1BMuNnA6S0_fD-dnFfR8jGXo-IlKvSZTH_JCd04YO_cl1vh3VgCBw6L7bz6WX07Ur9FIvKsstSZnmnHYjf61IR3uL2e8FYYqRq5I-KoNCl0JicL43bpwDfeH6DL-FfJucjUYFGhheUngDeEbbIeSuulYU2aJGhA8EoEe-4BTiV3ns82BVv0q8XuMcBZeuTd6ortAuQr3pBVJYj_WB96i5WI4472WRLlKQopbND_-g55AzpRXOhMkL0NneLXi4t5CSaQn8.O4Dqy3XKxNAhupM7nEUSjNezEcAePoIThA_Bwu5bjtk&dib_tag=se&keywords=shower%2Bdesigns%2Bset&qid=1786371104&sprefix=shower%2Bdesigns%2Bset%2Caps%2C359&sr=8-11&th=1&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=508790185f9ef4e6e027d1d8f54c5300&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "MAXYOYO Bean Bag Floor Cushion",
+    category: "home",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/MAXYOYO-Support-Stuffed-Bedroom-Apartment/dp/B0DJSRMHB8?crid=2MNJ3DGQGB53X&dib=eyJ2IjoiMSJ9.8c0gZuO1GHji-2ZygHL72szLgvcXOz8mtyCERjvnopnZudpuQLg4vM1g_jZP7m1uXZtc3aduAUh-SYfpTJZFjPbgpoMbf0fTisn3cguc2WQaoG_nJ1QDNooTXdsGFHBwHTV-gpxUqAz6NxrAEK_4DUnZLC3sNKL9OiOqs0SUYU-XlKhgU4FN4bP8M4adPogMNUgLGVIoFWISv9TIR9ilYYluAn-Xu33uRb2n_0WntpbvMEOUAdvnOAhlFBMnfKpYn4rRhAsGo0shKXJc-UvTcSJhDQ5pTWFZBK2kqI-6UMg.vz--7P6Zm3-7iQziuV2a1qp13NbWaY8KGXSHqrrtN8I&dib_tag=se&keywords=bean%2Bbags%2Bfor%2Bsitting%2Broom&qid=1786370624&sprefix=bean%2Bbags%2Bfor%2Bsitting%2Broom%2Caps%2C404&sr=8-9&th=1&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=25f44232727e863dc3edfa4e61c7ebb7&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "Zafferano Cordless Rechargeable Lamp",
+    category: "home",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/Zafferano-Rechargeable-Cordless-Controls-2200-3000/dp/B0D1CJCJKC?crid=1ZDUVS2KMBRRV&dib=eyJ2IjoiMSJ9.7eqsc6sZ2_Qor-3JILemahxWBnfqEImw0lSkMX1BePp5_2Xyaz-lm2VC3ucLnpVq34PsXHqUbPfVCMqwb367Xw7Y-OEg4EprO1QRzW-tP_bbFe9C_gEjHkfYvQnflP0H55YKs7XDjJiuc0YDd7egjKIv4zdzpAJbiaT9Za8jyART4OxhODFFULgDLtZqqv_CLqBZTTmURU2eCXMU5asZTfNZvmlR2m9dodj_mAiZaRfcZ4_6WVEuA24gCRBi-7kt9FNUX05wTY_hv4BUxSfKD5vVhQYKAB27KCE7LNhIM3c.3ZgU6OJHe4sovkl_WNnFrVCzqytdV5ubEnQSXXTYde0&dib_tag=se&keywords=wireless%2Bpush%2Bup%2Blamp&qid=1786464676&sprefix=wireless%2Bpush%2Bup%2Blam%2Caps%2C485&sr=8-5&th=1&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=3892db6c3c289a0482df560e0d4716f9&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "ANJANK Bedside Clock with Wireless Charging",
+    category: "home",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/ANJANK-Digital-Wireless-Charging-Bedrooms/dp/B08DQW6S3Y?crid=1ZDRWU4NO1SUT&dib=eyJ2IjoiMSJ9.zcwANCjaj1QPsCqHJ8mW6bfgQsFyoAvjm_cSeqi_iT7yQ8RF0349mIqt1LL8uGBoJDO3rK7j9g992UTkByZkwGd54d8BmIF2mKnWmdZCNXWLlKVT2klwWHAxBBLlFpGknB7Az51GQjXs3KbV3jcu86NQGZHm3tIec9tLQkgYYIxf-esI8OLuAyPCHjO3NryJ-fPVUGLiaVPOZsXHIMUZ-RoLZZDXTEmAxDK0wL40iMk6hGceVNFTSGlwSvghkJ6AZlJ7mKG1QR9elkMsHJwc2T5pDQYRruE5N87vzzt--SY.dFSH_6gH0h07078MpCiHuDc1tLcQst_bgo2JpBIkcqU&dib_tag=se&keywords=clock%2Fradio%2Flight%2Bbedside&qid=1786461223&sprefix=clock%2Fradio%2Flight%2Bbedside%2Caps%2C378&sr=8-5&th=1&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=8c1d558c174b9c114229ebaf30391ade&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "Glass Oil & Vinegar Dispenser Set",
+    category: "kitchen",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/CXINYI-Dispenser-Kitchen-Stickers-Light-Proof/dp/B0DBRCLGKP?crid=1YYG4G1Q38YLM&dib=eyJ2IjoiMSJ9.VtvQbiMno_Bb-osepfU9doaoGFmoE6Cror8mMqvWp7UkdkeqFA5uCQIYqraFRKYQdxid53dhvp1YIdYDLdCftSKXMumD2kDC97tVy9-kbfXCQTeam_A10SNC2w_Dv9-ar7uEqGKfO-m8WNUSJcDLSeN8HAw9-NRi-MU4iPpr--Kjb3tEMK9T8H2pn8MFcFPth-SGwW05eXeu4UV4TobsHDpDkHQsFJFHpOxVm6fNdDFeBdAXwj64DCoZsroba752DJVHL3GqISkj9ZcpUUOAPwwv83NJWrmGeW6-yl0Tmgs.W9TRObAWus0sNHlTNwFVgK9F6H4Zz9A1hjA1XuBcAnQ&dib_tag=se&keywords=Glass%2Boil%2Band%2Bvinegar%2Bbottles%2Bwith%2Bpouring%2Bspouts&nsdOptOutParam=true&qid=1786370332&sprefix=glass%2Boil%2Band%2Bvinegar%2Bbottles%2Bwith%2Bpouring%2Bspouts%2Caps%2C322&sr=8-2-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&th=1&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=bacf9d1d4a431506158166160fc70cde&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "Wall-Mounted Rechargeable Bag Sealer",
+    category: "kitchen",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/Mini-Rechargeable-Sealer-Display-Storage/dp/B0GRTZ76GH?crid=2QV3T4SAE12ET&dib=eyJ2IjoiMSJ9.l3QIg8TqNh8yD6Ldo4V6SdKs3_0FspVugIJK3OeyUks265FY_Azk0VT7dFYyU_8Xo36QF--liIWI8GEc66ASHnhlqvXOWbP88NrUqGRKiBeX7Ku0cHD-wu7-3FlFlh2Wf8E6xXKmc3PrX7GPlA2MzEOFdvxogAKwiL5GVLwpyZCFjDMD9F9Jy8X0sjozEYhv3oM9lXGrhWGTmdDB8PCln4mC-ilnWD8hhSOZnZQ4_IX1eUjkEf4oEu1HrdWP4grnfXQbLEjvBlZhqn216SUGj2f7UbGkPmBsaIrLlXpF_HU.RCOeYWjubwJwLq9U0DP_WWlOs09Psc4aNZO9SMOeOoQ&dib_tag=se&keywords=wall%2Bmounted%2Bbag%2Bsealer&qid=1786182172&sprefix=wall%2Bmounted%2Bbag%2Bsealer%2Caps%2C203&sr=8-2-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&th=1&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=b50caf150e35cadca6d2f984f67a8b3e&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "SwitchBot Smart Button Pusher",
+    category: "home",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/Switchbot-Switch-Button-Pusher-Bluetooth/dp/B07B7NXV4R?crid=1XAI8QDWLEWI8&dib=eyJ2IjoiMSJ9.B_8R7jobEb-0qLvJDvN66R46yCItf7jJqyUfFQ-j4LEtrUzGuP5r7ojlTU94Oj_Y1BvbP4yJqNGDevuf3bsWRPF0NK5tBbwbpNd7PLVZ3k9Ul5bXIey6pcxyJcF4GrwBZcOx4fdXGdOZi8PX72Hte1sQxNTu42wmUmgzXVGuduX7Do3DiKG12St6cxJyakcurDAi6_wFcgPw4rQn5ySqNEMKV2wyNY6Y8zNgf7gHKZIG9DAdgLNSp_ntkBeyV79n6tLiMaj0YglMjzLIGXXu4JB16hyNhwFXDtqFPJPhZoQ.-Tg3w4hKc1yZ9VxdRexptmT-g5xLLoTj1eJ4Mhp6iE8&dib_tag=se&keywords=switch%2Bbot&qid=1786181897&sprefix=switch%2Bbot%2Caps%2C236&sr=8-6&th=1&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=07e163d45fa46056f8c7d3421e28eaee&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "Wall-Mounted Retractable Charging Station",
+    category: "home",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/Gitryin-Charging-Retractable-Extension-Protection/dp/B0F4QRX9PB?crid=UONUR72U9HQ7&dib=eyJ2IjoiMSJ9.XSgXXQ9fycOAsEcQhfEg5NB_21o0Uc3jBJif8ssg0C_AloOI2oXs8y5alywYTW8Z6uUgWs0eXY3IFckIlKMG5368-ij-3LCXR3_rmcP-slCf3ZcF9Ua6qSAWHUmvlvOqIi_6y3uoj1C5wAZcS550Xbi8uODG5TGMlCwQC21nOEuNmV1QkzM7WPtu5diRFajVHrHcLbIJyZERO_J-4AEWt0yyR_v76Dhh6M0ORrSHQnpPdVhEh_dPczSwsIsUj9c14XrDKbqlEine1haQ2pGVO6z-6W6e2Qbg6-Fo4hKqR-k.-Xq7njMjx3p5EfO90ShXi-9u4ngPUY_BTcK7CD8wXLY&dib_tag=se&keywords=wall%2Bmounted%2Bcharging%2Bstation&qid=1786181684&sprefix=wall%2Bmounted%2Bchar%2Caps%2C236&sr=8-3-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&th=1&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=e0858349f5d5471ce5333331d49c52d6&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "Induction Cookware & Bakeware Set",
+    category: "kitchen",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/Induction-Cookware-Bakeware-Nonstick-Saucepan/dp/B0FX3WF1KF?content-id=amzn1.sym.8eb671a2-a903-4c3a-b962-ebb867a4f8f8%3Aamzn1.sym.8eb671a2-a903-4c3a-b962-ebb867a4f8f8&crid=1OQP74CBL4GVU&cv_ct_cx=full%2Bkitchen%2Bmatching%2Bset&keywords=full%2Bkitchen%2Bmatching%2Bset&pd_rd_i=B0FX3WF1KF&pd_rd_r=2637fd7f-6da9-41cf-a019-4236a283d87b&pd_rd_w=L6o9j&pd_rd_wg=qzPf1&pf_rd_p=8eb671a2-a903-4c3a-b962-ebb867a4f8f8&pf_rd_r=ASGWNHTATGD0R1FDPSR5&qid=1786182694&sbo=RZvfv%2F%2FHxDF%2BO5021pAnSA%3D%3D&sprefix=full%2Bkitchen%2Bmatching%2Bset%2B%2Caps%2C167&sr=1-1-6024b2a3-78e4-4fed-8fed-e1613be3bcce-spons&aref=WncP3rakb7&sp_csd=d2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM&th=1&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=8d415df4743058dd45adc5073633776f&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "Frigidaire Countertop Ice Maker",
+    category: "kitchen",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/Frigidaire-Countertop-Compact-Machine-Stainless/dp/B07JBJWP2W?crid=1L22JE6YIFHRK&dib=eyJ2IjoiMSJ9.djmT4QWt0Lej_blkYB-gK9RxRpFBfKxvk1j7ZlIc5YyOl6sh3YPVGjkNDDgfCPILPR-DwGSftrKDytEJMq631j5iCehwelhnPMBx1jMZ8FhLGBa_GFTZHDTnMgxPdlUgqCanukk_cVSbMtiMlzU3kqoK5ExJuIhYuODAS7z1cmM-3s9kXrXFzrw2nukdPoh9ueyHOQt1hn0J_i4u0sZaH7sK2ybbUwimQLOpJLKVCa8.zvSBoFiX48-ptQXdfUXRsYQ4jostMwgX7Bbb16hcabQ&dib_tag=se&keywords=counter%2Btop%2Bice%2Bmachine%2Bmaker&qid=1786182406&sprefix=counter%2Btop%2B%2Caps%2C246&sr=8-3&th=1&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=283eaf7d9264a3a7e57a15654877cd3a&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "Mixology Bartender Kit — 14-Piece Cocktail Shaker Set",
+    category: "lifestyle",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/dp/B0CH83JXCR?_encoding=UTF8&th=1&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=77bffebb14cc91a5181b8e95580745f9&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "Fireside Corduroy Armless Loveseat",
+    category: "home",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/Fireside-Loveseat-Century-Armless-Corduroy/dp/B0D2LK33WR?dib=eyJ2IjoiMSJ9.sIOAdW4yfVNf4yl3OhfOQ3VWvQeBBG0ARgR7Y4VqMVVhiSWD9Xo96iuDhcMwbjhMHbKKdVo4sbh1fD-5EYfhN7Cvio4X_wyzbt43EQgbhKZCSm0cZoTGUM-J6xKEd8XtV41SttGq0g2Ymvefp9dUpFxD7ZfG6YJ8ZcqlW_XCMiEZYh7TAdrWE1Bl-5y7BldZ93Q4xjtS-Oa32LtHi_dnB8dEpuJPV1VPVUqXDIIWNSRnuRsaJJySnJNTQ1lg_zpkOzR9CbwV5nj3DCjxDlW3VBFqpNDEaBaALtiEKmdAyfE.INAAZdNJysDoqa8_rUgfgAQSWBfVYJ4wfahcchUwkSs&dib_tag=se&keywords=couches%2Bfor%2Bmodern%2Bliving%2Broom&qid=1786020528&sr=8-11&th=1&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=10c58a019fcff21d907c49088356ce7f&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "Bladeless Wearable Neck Fan",
+    category: "home",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/SWEETFULL-Portable-Bladeless-Personal-Twisting/dp/B0CNZ3NV3S?crid=31FCYSMZ4AYF5&dib=eyJ2IjoiMSJ9.c736KjaIQZaRERFIJVntnQZSyseowBfMVeoLAFLYMa6-yc6R9bqAOwx09CNyz5Uj-3bMeHGkv1Yo3OVNUsPwwNjI6ISDDTrdGqV-JMxC-bhw3pYF_B1cwyBLY2RBCW-IPZ8n2Eq61KEKaim3XCMtv_6owO8nzcNRQBASr4ztzmibWmu1iMT9AnnjWiqAq3mqG2xP_qC2BHXCVtyfhDNcfCXmtd7yW6SnFkzSeUupi-SkHG3e97QqZa7gWGLrHJA7Jp40ABZgTHi0cpFANK8qKNwP4pGuPkKQB867vavx2DE.SYH4aPmut1kcQnGGEeBSPwVG-GpR-e1e5Sgca66L6AY&dib_tag=se&keywords=wearable%2Bneck%2Bfan&qid=1786019753&sprefix=wearable%2Bneck%2Bfan%2Caps%2C241&sr=8-9&th=1&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=376f3ce0d7afa4208cea7103fc621cfa&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "Espresso Tamper & Prep Accessory Kit",
+    category: "kitchen",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/Espresso-Accessories-51mm-Tamper-Kit/dp/B0DZBQ4ZNC?crid=2QG89IY905GZB&dib=eyJ2IjoiMSJ9.qb8pkTn35k_lVrNwlyZUYz6_CGX6iq8X4q1jEVyvKglhdwg6jxd1qM4i3KRWuETtsyXwSf4qcQotZ3H66eY5jdIC6HXkAHS28MPbHL40Rxp4Iw2BVCyah0VPpA9lT03FgpwcHctdgQFLRvCV7tNY8FnPjFW_s3et1NxhGioCFDb9izbqPn5OVcnXbaGiFyzRSzfBn2J_NJJkipYW9vym4GQt0lAZzi_bGDQPlY5qEbUksB3t2k0LwqSr0DayniBWv0WFo4oUbOpME1u53DlH_Bvpp-3JdG4GaGyCiT78XAs.zXC6L5PtBeGOr8kGt-OrRj5HDyvKYJApJlIqaYl28dg&dib_tag=se&keywords=coffee%2Bprep%2Bstation&qid=1786121293&sprefix=coffee%2Bprep%2Caps%2C300&sr=8-6&th=1&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=30a9691a1231394a91f0f2b809220dd8&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "Weber Original Kettle Charcoal Grill",
+    category: "kitchen",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/Weber-741001-Original-22-Inch-Charcoal/dp/B00004RALU?crid=1DIKGPN3L0D92&dib=eyJ2IjoiMSJ9.EW4-PMBUpMEj2UU6EHoa4ZReVvD24Cz1vAhIzyGd3U6_GC7xmdik3TFqObsy9UEpuI3be0G6jQvsq7jLVxSn7MdheA0E9qOZ3K9UK6ErrV3SgQHP2gd3Jf7274MS9TdKTHtPbXw1kz4f07NPeGTDD__KgPardMb5wmJkZqq_XjMiVvHzuqkABqg3qS6G2M-TldWPEg17WfgNEKYIyG0f1NkXUOjC32hyJ5AtpyId8Fk.PqGyH5OiWTAajhVK53jNfFABxCTlaS2NQZz60GmQXCc&dib_tag=se&keywords=barbecue&qid=1786020133&sprefix=barbecue%2Caps%2C226&sr=8-11&th=1&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=1a6dcca1ea4ef1f1827f55713fa972e1&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "TK950 Mechanical Keyboard & Mouse Set",
+    category: "lifestyle",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/TK950-Typewriter-Mechanical-Anti-Ghosting-Keyboards-Black/dp/B0DWMQJQXD?crid=VLPA1VDQ71V6&dib=eyJ2IjoiMSJ9.4cut2EmKKhthyuAvZwDqd7IrvANQ0sJM3WqcnnCx7ZMuq3Wo9lzT4ty49GqqoklP7n-0UYr2ZXDpV-9WvmQUAQUFDRc1PkSKte6LczqKAGPys3Nu77tKAtRK78wGh94xB6NYMv3iDRmNUD1gWAuCKx9Bq_Gp4LlmFuN5CLL-W-_u3DfKoHemFXAaJmYbx0A6R2ppw6_Tvbne_VzFZ5B2mcNMn3dG1eq7iSYdG1rCm2A.sTQbXMV2tDpclhjt6ojaRlFGlhlqkv1zMYjBEI9Dp24&dib_tag=se&keywords=modern%2Bkeyboard%2Band%2Bmouse&qid=1786019291&sprefix=modern%2Bkeyboard%2Caps%2C221&sr=8-6-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9tdGY&th=1&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=88830ef7dd93b92775b237d7a2131d59&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "KATAIS Handheld Digital Shower Head",
+    category: "home",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/KATAIS-Handheld-Mounted-Temperature-Digital/dp/B0DTKC8G7C?dib=eyJ2IjoiMSJ9.Enuo45cgIR8jCpi9Kg3bGVvXXCyGKJK5XwvkaB35xO79gSY0fXDD4oDgW2A6mKdooC07gckcC2DAoRq8ihM0vX3SKA0-cUdons9De6XOnBl2FCFm4tqscJysqpmvhaVaD8i90P_w7VmYT56ZckezzAyNE4zlhz4q1DnNciUftTUlBKGOC7oQ0LhXEzvL1-VpScpCGiFR5fIO-UZCp_Rw5f20Vm4W7YuC1q3P-dA7CI2gIwQPAcd7iBb9c37MDy2IKYoYWL-cktaPEEoA6piRgjrCUd7EGb99leQs7NqyG7Y.g8CxUDGgmpNUdYKTO0IhjiNBY5gjz9edV14BAmCkPVY&dib_tag=se&keywords=modern%2Bshower%2Bdesigns&qid=1785932190&sr=8-15-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9tdGY&th=1&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=a0aabf1a4e5542e2e60898584ba9a0e1&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "CAROTE 31-Piece Nonstick Cookware Set",
+    category: "kitchen",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/CAROTE-31pcs-Cookware-Detachable-Handle/dp/B0F7M2S4L7?content-id=amzn1.sym.6b470ab6-f6a3-445a-a041-63e1bdab9eff%3Aamzn1.sym.6b470ab6-f6a3-445a-a041-63e1bdab9eff&crid=3IIZMROVVTVKC&cv_ct_cx=full%2Bmodern%2Bkitchen%2Bsets&keywords=full%2Bmodern%2Bkitchen%2Bsets&pd_rd_i=B0GYZ5J9DW&pd_rd_r=932c328b-b240-45a0-8436-83f55584d572&pd_rd_w=dcadk&pd_rd_wg=hbMCH&pf_rd_p=6b470ab6-f6a3-445a-a041-63e1bdab9eff&pf_rd_r=58KRCBWW0PHQM77XYK1B&qid=1785931922&sbo=RZvfv%2F%2FHxDF%2BO5021pAnSA%3D%3D&sprefix=full%2Bmodern%2Bkitchen%2Bsets%2Caps%2C201&sr=1-4-d084433c-81a6-47e9-b48c-4e943380cb4a-spons&aref=VRIVwZOhGM&sp_csd=d2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM&th=1&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=44494e2fb0ef26fdd2a272dbe34e9a10&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "Stanley IceFlow Straw Tumbler",
+    category: "lifestyle",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/STANLEY-IceFlow-Straw-Tumbler-Quartz/dp/B0DR9ML5X9?dib=eyJ2IjoiMSJ9.X9Nu1KSucsG0jqEI4O_beABVfcOVPT0Lj3F4vF9Bx7CsCvtF2kOLeBbUPKKFUdVb2kxBN8omgUo1LW_z1Dzz_YaIk7U2iRX1-nS_6p3Nwf4SlJSphSDqajKQbewPI-PI5ADLymbKJMb6biqs78UmHvQ_owuxISVKxTFom55gJ4mO38p9Y7-vRsffVEET-1JKJuzs9z_VhVTmxNLngeNxvPfCHEQPyp37irrdHJFN9Audz0tGA0OPG-gCdKoaqfxyd1yFh2L_X8HKYrKP7R7hKt3WzHtZEkNIFt2jsyZdO_k.pFkZmf0Y6khs1Z-7gkHBrn3vRcyEkLP2N6mCi-XFkoo&dib_tag=se&keywords=portable%2Bwater%2Bbottle&qid=1786019501&sr=8-6&th=1&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=6adceeb307baa686bb8070822bd2e823&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "ZTAR Foldable Travel Power Bank",
+    category: "lifestyle",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/ZTAR-wireless-travel-portable-foldable-dp/dp/B0DH9CFSF1?crid=395G2EXMXTPQL&dib=eyJ2IjoiMSJ9.PHus4pnPmQxLcEsqJTH1EgPLMQOYu8sB0757rg3mIOo.8uYvosDlBWXdv9Ifqo6nIpqi8C9B4xFNTG88XeUfbGU&dib_tag=se&keywords=modern%2Bpower%2Bbanks%2Bportable&qid=1785930896&sprefix=modern%2Bpower%2Bbanks%2Bportabl%2Caps%2C222&sr=8-19-spons&xpid=-d88e7KY96Amp&sp_csd=d2lkZ2V0TmFtZT1zcF9tdGY&th=1&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=4e2ad023401390039929884038f5cfc9&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "WHGBJA Convertible Corduroy Sofa",
+    category: "home",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/WHGBJA-Convertible-Cylindrical-Corduroy-Fixed-Shape/dp/B0F9KXTBGG?crid=1VFT6FHEWWE30&dib=eyJ2IjoiMSJ9.EyB5sxOxkV-zbN51I-_WFyYVrlNssYiV6gkRusBS-w6O7LHxF1hbNhUcRT606u-mSDjW5csN-Xpy0tLvumkjRg8fL9KKFp96NXa_KNfFEGAB7K3JcpOx4TDjK3dGUzjUUmQ5hVmxmwkHTuI4RTareBSe2yn9x8fAXXNS43jbCQE0uuKvrxYYe6eMTQD-MuRHizRUzsuKI1Z_jLuo6NRjCZFSjhBvJtxsq35BW6_QgPlsWD2bv1FfksyRd4tiK8iQCnn0RKELwwcgwdBoP_x6HOWu3tMoLCSi4vB-xMco5zA.N3VkqDKMyohCVDi0MOy0M41GOc6Dv2pwmyCat7_Mx4E&dib_tag=se&keywords=modern%2Bcouches%2Bfor%2Bliving%2Broom&qid=1785831591&sprefix=couches%2Bfor%2Bmodern%2Bliving%2B%2Caps%2C235&sr=8-2-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&th=1&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=d6312cebd03b0dbbf9cec333dece68da&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "LHS Pour-Over Coffee Maker",
+    category: "kitchen",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/LHS-Pour-Over-Coffee-Maker/dp/B0F9Y3P6YN?crid=8DYQZEKKI9Q9&dib=eyJ2IjoiMSJ9.4e4ENYWxzS_fwURlk0Tepg6qomtXX2LWZ2jbQ7RZJZIYMG72KYZCklFYrulB_Tr08ISEDTtsFP-UDZPitEhhCEodm5bl-vROSWytRpT1Tqgvq_iKhi4jlrRQpG_kFe4wiJk6PGwH3OwjwBt9t0ic0Xe3_H9WMktYqLZWUv4GfJiQCgWcFBsEmQCJwMCqrrgpAdqoNVmuO3uAyy3G4pAqBkzP9Ia74UCsjlI9T6KW_jYOr2ClCmbocrDmW__pEC7XQwAMrugYN-kCyj9yr2WRS2yFDc9m6zuGUGD9HsVd7hk.GmjeJdJvXkJtsNLJyp_prPp1g_STWFO1iqwwSE17Vm0&dib_tag=se&keywords=coffee+preparation+kit&qid=1785831266&sprefix=coffee+prepar%2Caps%2C196&sr=8-1&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=002146a1b0ca385cae80fda8a6c4597a&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "Spaceneat Glass Olive Oil Dispenser",
+    category: "kitchen",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/Spaceneat-Olive-Oil-Dispenser-Bottle/dp/B0DYF6H5YJ?crid=2EUJGQNTFRVF6&dib=eyJ2IjoiMSJ9.Jw4-Px62iBfqrc62M3qcc54rkpCd4I-SQZPFR7glHl9AdPpzVyNc7-TWiyYg8vF7NGGRb7Hx1F4jZdIeV9qzHaW660Em4Ps0Wc3ZigqFYC64GxYA8Hjfb12dMFRtNglM9nUYRr52W8z6OLbofCv4L725lZGRDqXTeYQynutWr5-ISOvC--8xg_9bFWzW1Id8zHAvzVyTbYnqvJKPQ7vfcT5h47mkQwRrjVrKwI8ZJrtcXEj3kMx3cpEMSsYD14bFb8vnQpCud0BFw2UUfVACfTMiNYgF2G2r_-q63TAJbYc.QczTsJpTbuyE9G5-XYwa8JFb33omqPDaK1O9JIQMOgQ&dib_tag=se&keywords=modern%2Bdesign%2BGlass%2Boil%2Band%2Bvinegar%2Bbottles%2Bwith%2Bpouring%2Bspouts&nsdOptOutParam=true&qid=1785830837&sprefix=modern%2Bdesign%2Bglass%2Boil%2Band%2Bvinegar%2Bbottles%2Bwith%2Bpouring%2Bspouts%2Caps%2C153&sr=8-1-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&th=1&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=1fb5da117106ab4a8f1ebf3b1a6faa74&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "NOVETE Countertop Dishwasher",
+    category: "kitchen",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/Countertop-Dishwasher-NOVETE-Dishwashers-Apartments/dp/B089YD3Z91?crid=62X85PMGSR43&dib=eyJ2IjoiMSJ9.y97ztFHlv2-Gh2n3KSzpiv9vDjM44QpwKGhh3YxhOp0ckuhzUnjN-ZFVKOT9j-KfkRbyKZJqcd4WAtDTlqCTitbV0naKRGMlK-6zxizOkhigNnSxd1xK-EZZwcsd_frqB3XoRMOiVsp7rfyLDZK2SbAPP7finxQDNOc03d6-BtL7NOahVpbZlwBTvpTERDKksH4whpfH4XlO5-W_N6I-7j_nePKoWc4R8YdyY75mOmw.08h-hYCZQMsf6hPLrE-2-1MHkoEtwb-Pvv4P1TC4OYc&dib_tag=se&keywords=countertop%2Bdishwasher&qid=1785601129&sprefix=countertop%2Bdishwasher%2B%2Caps%2C290&sr=8-1-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&gaOptInStatus=true&th=1&linkCode=ll2&tag=darraghcummin-20&linkId=900ef28e3d64932079b1604b81565a21&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "SCOAGE Flip Digital Desk Clock",
+    category: "home",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/SCOAGE-Mechanical-Digital-Display-Battery/dp/B0CNYRFXK8?crid=1E4IPCU0V0JFE&dib=eyJ2IjoiMSJ9.Uo8xkdVKQfLdQmKO3eHY7LiOH9K_Qfe_CAn_nBXYS0x1_1k20AxDtXrWmWHUXRI5T4D7far6L0JQ4xulR8hfTPqlRFnG6pK7ULHbpGvg0WM1yWomd03s66kypp_IGLJ3bBanUnNWzK4W39kHGAQnf12R-c5RxTDq2Wl_PDA_G_h8gL7xlJHjORSBcvgO8VxHTUI_NEQFEQOCWeHj3VAPDQHbKvUaVVtXhKj65MRpHUKtQFeYCBpamqO_RVp_s5X6gUFZYkI8ewt_c2iwbKrKw_GaZoGrFnqtzdIRNNuiSPw.RCqojqVUH9voKafkhNi9z-vCBTyOeG1Tzq60qnbgZZI&dib_tag=se&keywords=modern%2Blocker%2Bclocks%2Bfor%2Bcoffee%2Btables&qid=1785603274&sprefix=modern%2Blocker%2Bclocks%2Bfor%2Bcoffee%2Btabl%2Caps%2C476&sr=8-1-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&th=1&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=b2e7a12910ca012e295a6fe4f42d6365&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "PoolCandy Motorized Pool Lounger",
+    category: "lifestyle",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/PoolCandy-Splash-Runner-Motorized-Lounger/dp/B0D4BQ4FBR?crid=NFXX5N7TPWH5&dib=eyJ2IjoiMSJ9.YvasUcfTUie5wBTm4QtgFXrC-zagJwptu2-FmaWXFY5yxit-ypbPvo15hvokVII04widivYDy1kfSrRD0FrPDiCfdekNejh05Aoh54lhnNVcf2gelMjyNunJRJmq46W2nIc35fMHH5a5Wvms9r-yw6Qp1_0_QErdqTrksjbo78UAeRUAHLRoLSp9Bit_1rK73B9SeprDLSr-HeHRvpYbwnPDyEb94_76EZOkjZlj_d65ZUvfZ99fbB5v0Jf3zEgud111d3_97QimxJCcxYuhOJLFAGvYC5zS3wZquzdEYFY.-sYDmFR658cYej3bnzyP_aVzq66z6TrgGrIpTJuAr_k&dib_tag=se&keywords=water%2Bfloaty%2Binflatable&qid=1785603004&sprefix=water%2Bfloaty%2Binflatable%2Caps%2C276&sr=8-1-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&th=1&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=9dc7c9a30b69d39c5c641aea64512b5d&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "Bamboo Spice Rack Organizer",
+    category: "kitchen",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/Tfro-Cile-Organizer-Seasoning-Organization/dp/B0GJC12PF9?crid=1OAROP6G1ENFZ&dib=eyJ2IjoiMSJ9.9U3E4VmtJkVRttIjYz-Zec-V_2zWXhAKN8IgKCigeZORh4Gx6bM-smF8wCefxPQphZFr9uUbe0snqlq3Geswykr7R48riu-kc91j3W1zhPaiQRcRBTEvQWDRhEpf9UQBHu9cD8qYBu8LiQE97xkcNkGnniuN6ZUMvLwcRDJqTUnEOz6MFwxwDmtXwN_0WQ5vUccPLUkBNfXP7pDJDEB2Rj_uFHLGBI3AJeT5_lO1gYZWcefJTwxAX-3Q-z82WOuNrvzUrZNJKRnuu7vW6NBkxtt37YZdrRU5_74NyqdHs08.pxWSji3XZAToPAw7-NNMkepHlF_jfTf9gSvrixe-lgM&dib_tag=se&keywords=bamboo+spice+organiser&qid=1785600931&sprefix=bamboo+spice+organizer+%2Caps%2C277&sr=8-55&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=02e7205fb776c8659cfda56c047b7fe5&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "Countertop Atmospheric Water Generator",
+    category: "kitchen",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/Atmospheric-Generator-Purification-Countertop-Filtration/dp/B0DQ7WWXSX?crid=1ER69ZW26J88S&dib=eyJ2IjoiMSJ9.QdGOTC_ShW7NJNu7qZjr8VboKkkYIcZ3OANhHBwCEZh8l2lBIpzIZILY3fkjqZ63x3GZxIUbHnlx_Q3J4bJ7kA.PVakxe1X5CkZOixmArtKwnK3dHEWnUO20Cfa7xEDCHI&dib_tag=se&keywords=galamarine+atmospheric+water+generator&qid=1785600684&sprefix=galamarine+atmospheric+water+generato%2Caps%2C704&sr=8-3&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=f4f3db56c9d932e1c1d6527a422b969c&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "SUNVIVIPRO Dual-Head Electric Citrus Juicer",
+    category: "kitchen",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/SUNVIVIPRO-Dual-Head-Electric-Cleaning-Portable/dp/B0GZK2JJTY?crid=3JORIA6I71W1B&dib=eyJ2IjoiMSJ9.uoBdRk7PRkdlhtyZRjf3-pXxxIkZ2zj81R4PoBOC517tYktO-g_H3gNEvFCXWLZ9AxDcSdf8QmKVxNOFveDQiRi0GLOfOenzC6UymafUPPdmiNyEW7TDwMm3TVvmF6MC67Qzqc3T3V2hbAAtG6fdJK2iiXzv18WXZlwc-n5XlSBYXj4vMxBR4bu6Z_VJd5AveQLRvF8wbafQvomfkIatTLy9rM_OjpE9c8-ltamLrJM.RXHiYyY0mqp0AQq53UeESU5TajZxk0xL1w-n2pRvuCY&dib_tag=se&keywords=citrine%2Bone%2Bjuicer&qid=1785505973&sprefix=citring%2Bone%2Bjuicer%2Caps%2C399&sr=8-1&th=1&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=0b41b94f602c5ee723c7162d1d53fb37&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "Airdeer Touchless Smart Trash Can",
+    category: "home",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/Airdeer-A1-Automatic-Self-Changing-Touchless/dp/B0BY89SX8V?crid=217TLCYFKDAW1&dib=eyJ2IjoiMSJ9.mRt9ZWkk5a-ebgCWD8yA4EDPQFkuk7KPbgFrtXr3X4fyGNH-7EqXoFdgl1pJrNyuoSnxcMm8pQ23MhiO7_AH_YAeO4HThctoMsOvBiqvm5-pptqubZ0jM9kSFxUH5wz2OPL5C1THVGr_eeJzROVI2WUA646P8qQUZeTwKW0tWopAwg5yLXghEIVmVaYey9Op8WtEcRwehKjhRowGJaEq6umY92pljwbD2lFO3i1nSPRy5oGWuTVMVF35KnpN1E12xOGssIwBG6mfCeDDpvStVa_qvLrRbiFD9s9YQV8JY_0.BPM2MohMPaqLy_yMJaDPBzEyraXvwvckEfDxO0PH-Js&dib_tag=se&keywords=smart%2Btrash%2Bcan&qid=1785506275&sprefix=smart%2Btrash%2Bca%2Caps%2C218&sr=8-3-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&th=1&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=cb16129056b321d4e3caeea5e68b2a1b&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "LINKChef Compact Masticating Juicer",
+    category: "kitchen",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/LINKChef-Machine-Masticating-Cutting-Extractor/dp/B0GS1QHBRZ?crid=TDIDATNXO3Q&dib=eyJ2IjoiMSJ9.FvwpD1Gx0Hgn7NLLgQa2d_7xKM21s_Fd73xeo0su3NsNtBt7dwo0NL14li9d7VTwayPLsqVnIbq6_1avmzePgwJ1S1zb2ocIZNWEKbC_Eh5gQRgsMCrnoSo4SwbyVlGaAARTmLE5EBEitreH3m0nkdc5EiZ3YcRwZUDHu_mRBFHRtAFWznWlVV3Okniy_roImkvZANynTFDdov_FOLZeD1-J4im46Pp_hzsokX1nGRo.o0_M0Sy33aizJK9JL8p05AvUerRijiBSp2uhxW0QvlU&dib_tag=se&keywords=compact%2Bjuicer&qid=1785506496&sprefix=compact%2Bjuicer%2Caps%2C228&sr=8-4&th=1&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=0830a95c75db35b308c9317a6a1200cf&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "Stanley IceFlow Tumbler — Emerald/Honeydew",
+    category: "lifestyle",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/STANLEY-IceFlow-Tumbler-Emerald-Honeydew/dp/B0H1YXBL68?crid=2GM41PIMGFBIJ&dib=eyJ2IjoiMSJ9.7dM152k7F2kYeZtVGSCanFFQ32L6GwKvo8B-qUblaUhDQjCApGbkmA0to4lv7WoeNrpMbnRRLciIui-DfWFpiRYQcVDhOe273bQc9Sw9WoLCU9hhIP_0JF4pqzJAXeFM2yO941akwynllJrJsSmPl_MLpX0s57cyVDn7jua60zgQhYJwZiyEaqKpFaPFfz7ri7spflZDBt4KmAuk6qNPwJg_kzktsC9xN3hcA_7OBJ2VNzpyi5YTKX2HArA5uPjnf4QZNSLFo_k9O5k4UTcLDYTPhCZCNW0XAVqptoxT13Y.KPqTDFTAmWe3HaGZYK3Kda1E0hUuoV6cFhXCW7WkEXs&dib_tag=se&keywords=stanley%2Bcups&qid=1785505729&sprefix=stanley%2Bcup%2Caps%2C225&sr=8-2-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&th=1&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=50147afb343c5c20693fcc904265e982&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "AmazonBasics Stainless Digital Kitchen Scale",
+    category: "kitchen",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/AmazonBasics-Stainless-Digital-Batteries-Included/dp/B06X9NQ8GX?crid=2N6DOFAIS1NLU&dib=eyJ2IjoiMSJ9.EsnS6dMbQ1WjpaSJIJqshjiOmhGr4EzgUEEU3EAKSz9UbNGa_h9DlozBIH_WtVKhKtx_9lRA93SkQw6Q4uvv55kIPyG1op8b3AnmdpPm9voW1XB6a_JwFNyHi2WQp6y1c_PQDaRUewCgnswzwx5yQ_pWBcc_JApA0Q-Gm0etsNmFNOuQEIZP_2RnOQCXc7UGyXOurSH8YaFmYUL5CvHQGdT4Mz0vj_cZ3w6wWNi9TWQ2Gi5GXjtIWKGBXc50HPAFv9nlaaGAXHlGcKgNEZaCoeQPniu474ipXWxAHh77N14.ybTlTrzg4rnGeu5oJcRnV8juoFs-LEB0RmxVd4vVJIY&dib_tag=se&keywords=stainless+steel+weighing+scales&qid=1785505513&sprefix=stainless+steel+weighing+scales%2Caps%2C401&sr=8-1-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&psc=1&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=e8399e41044e24a51401f6fe2ecf80fa&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "Convertible Tri-Fold Sectional Sofa",
+    category: "home",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/Sectional-Boneless-Convertible-Tri-Folding-Apartment/dp/B0GZ2RH1VR?crid=3J7YTG5Z51AMB&dib=eyJ2IjoiMSJ9.bXkpbzPEbzCce95uA_i9ViafiWgNWGP_-saTDkrgCH1L_Pg_T5wZ3XWk6b88ahXmm1za3p4ElXCE1kdz2rMbKgYYtWN8IesInsI0HTiy8E_4gP62uDz33LUDIgst8fAK1vwN2xmRNhzZvEKOAXVf4VDL3D3XEq6jSfhOaTNwh_NEAudMmnh9AqmU_FYAEnWEwYM3E1-0evqTJJDPNl-jWCNm-FwON-QH6IkIUc-URpbfXMSMzFaL3UOEHtoCQco77Sscpd-1KJLqC2I-LOcJvIKR8fVxC3JD0d8CWG_WTUA.Hx65v8OmM8PSUnLHj94Tp-jte1O-J6ke2imz8-gvkK0&dib_tag=se&keywords=modern%2Bdesign%2Bcouches&qid=1785398039&sprefix=modern%2Bdesign%2Bcouches%2Caps%2C576&sr=8-2-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&th=1&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=38f5aabc887b519172c553018d652f8d&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "Gericco Giant Plush Bean Bag Chair",
+    category: "home",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/Gericco-Giant-Plush-Adults-Armrests/dp/B0DR8CM34V?crid=1P9YZGTLA72Q1&dib=eyJ2IjoiMSJ9.ulB-sJc9QAfg9UTovTP7Rj1uykYVGgbu9RwpOu4B9c2uJ4FRqhyjVMJcZOq7J5ByfYpHkIdo6I4mt0kK1lOisVk8YRcvWSGTQ9pLdvmKTqAbi4Pmx0Sc0LUS_hcwYVu7FhRlsIM9LgsgkKbzDJ7T8Vt90TTlR7o9URijzeSwBsu-hR91jKWhR0-K2hWI1EozL7rJ1lEHHrSLEhD29GbPgW3R2-OXCcDBmZZeEEO1SoJYwwYJtctM92zs0K5WfBojRDWeARiaBN8ZCF-zQydhb4Sm_3gvnoIxOnQHYeB_16Y.E5bvmlCUhvxx6jGLihT7IbAaLphc3gVMlqTPt0bAUQ8&dib_tag=se&keywords=comfy%2Bbean%2Bbag&qid=1785398239&sprefix=comfy%2Bbean%2Bbag%2Caps%2C358&sr=8-7&th=1&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=d2d7941044571f4c6a3b8b4c766f0fcc&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "FKSWSQY Mortar-Style Bottle Opener",
+    category: "lifestyle",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/FKSWSQY-Mortar-Beer-Launcher-Bottles/dp/B0GV8K9DXD?crid=2571BA8W103NI&dib=eyJ2IjoiMSJ9.jckhOy50eDcURI3ZQVe1dusiK1GXlP7nrz_DF3ziIUHvSJ-TEir_IXlhzEUOlr2ACrZ3WFNjdKdv7xHPdHatmtU7I3BIiGb2-2n_KMoXwuK6MDXUR2NDGBXs_q6XqPZR11ZEd3JCSqx9d_IVixxwDOh98SJCyTNv9bzcKwMYaxNXuiNkWu4PSh0JubJvHV5fUHnCZJbcXepK3bQ9GkBrUwrfCIveA3syqrqOfO1jYXS59HFu44siWMWQdA73xeQJ8ElzK2unsa2ITcdZLik6_JgT-i1Tu8pL5jwMOFNIjFs.M6T8L4EfJWsUI-ZwYLMKYTgcysoR2rsPeGa959n_9S8&dib_tag=se&keywords=bottle+open+mortar&qid=1785398594&sprefix=bottle+open+mort%2Caps%2C226&sr=8-1-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&psc=1&gaOptInStatus=true&linkCode=ll2&tag=darraghcummin-20&linkId=a9baab2fd1203a992cd04c648df49635&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "White Noise & Sunrise Sound Machine",
+    category: "home",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/White-Noise-Sound-Machine-Sunrise/dp/B0G1RKMRW6?content-id=amzn1.sym.ff8ef279-a5f7-4f7f-9f79-9bafa0798511%3Aamzn1.sym.ff8ef279-a5f7-4f7f-9f79-9bafa0798511&crid=NDS1QLNSCOYX&cv_ct_cx=modern+clock&keywords=modern+clock&pd_rd_i=B0G1RKMRW6&pd_rd_r=fb450fa6-03db-4050-b6a2-9ce83abf1d2f&pd_rd_w=2RBWj&pd_rd_wg=YYbxN&pf_rd_p=ff8ef279-a5f7-4f7f-9f79-9bafa0798511&pf_rd_r=WRQ77VYNXDYFNHPEC27R&qid=1785349668&sbo=RZvfv%2F%2FHxDF%2BO5021pAnSA%3D%3D&sprefix=modern+clock+%2Caps%2C200&sr=1-1-0c02a8ec-5415-492b-abd4-71d89e689c52-spons&aref=Py4kil3K17&sp_csd=d2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM&psc=1&gaOptInStatus=true&ascsubtag=srctok-388ce427e358ce3e&btn_type=ss&btn_ref=srctok-388ce427e358ce3e&linkCode=ll2&tag=darraghcummin-20&linkId=f3b88b36bdf520de777b4457c6591b06&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "AllSpice Wooden Spice Jar Set",
+    category: "kitchen",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/AllSpice-Wooden-Spice-Jars-Walnut/dp/B015F165R0?content-id=amzn1.sym.9830f7a6-3831-47c8-8516-490493d4fc59%3Aamzn1.sym.9830f7a6-3831-47c8-8516-490493d4fc59&crid=7HOKSQOZKABD&cv_ct_cx=modern%2Bspice%2Bholder&keywords=modern%2Bspice%2Bholder&pd_rd_i=B015F165R0&pd_rd_r=81b0dfd0-73d4-47a4-b3c5-2691ab1678f1&pd_rd_w=BRwZ0&pd_rd_wg=gs0HN&pf_rd_p=9830f7a6-3831-47c8-8516-490493d4fc59&pf_rd_r=P7HJG09904BFD44V92X9&qid=1785349490&sbo=RZvfv%2F%2FHxDF%2BO5021pAnSA%3D%3D&sprefix=modern%2Bspice%2Bholder%2Caps%2C250&sr=1-1-7efdef4d-9875-47e1-927f-8c2c1c47ed49-spons&aref=gnpWtm1C54&sp_csd=d2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM&th=1&gaOptInStatus=true&ascsubtag=srctok-60f98cd429b0c8f3&btn_type=ss&btn_ref=srctok-60f98cd429b0c8f3&linkCode=ll2&tag=darraghcummin-20&linkId=1ee8c6b073132187c1126245f76e9d22&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "Anker MagSafe-Compatible Power Bank",
+    category: "lifestyle",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/Anker-Magnetic-Portable-Wireless-Magsafe-Compatible/dp/B0GGM6G3SN?crid=TDKBKWBVIC56&dib=eyJ2IjoiMSJ9.VNXjxpEao8VS05AHjRGoRgzn7wnZZy3544-ZeJuW5bsz5ik1lBBujAO5luG9QQ_o1NezUgz1fBHusZmUgjE44n7d0IaA81Ip4zc3fhgtFHcFBJ3We4K95kD-u8n7BcK8W74KrhhRV3idRYN0hGLh-QOhT_stw3fQuXzQeT7MGhT9YqqJDTnKtWFnk13Zb4O72VyPWqsRU-A0y-x93GFHnj2vvuTMOq9tc9FPhVcBI54.GkrDExq_HPWRGaydmqMFtKl2szsdCLeh_-saoZkM2J0&dib_tag=se&keywords=portable%2Bpower%2Bbanks%2Bcolours&qid=1784990021&sprefix=portable%2Bpower%2Caps%2C15005&sr=8-6&th=1&linkCode=ll2&tag=darraghcummin-20&linkId=9db195755d766964957d3d7ac432572d&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "Vornado Classic Personal Air Circulator",
+    category: "home",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/Vornado-Classic-Personal-Vintage-Circulator/dp/B01N39W04I?content-id=amzn1.sym.292df443-b323-44ae-8b40-9a666975b8b5%3Aamzn1.sym.292df443-b323-44ae-8b40-9a666975b8b5&crid=10K32OQJGQCM4&cv_ct_cx=living%2Broom%2Bfinds%2Bmodern%2Blook&keywords=living%2Broom%2Bfinds%2Bmodern%2Blook&pd_rd_i=B01N39W04I&pd_rd_r=fef12c15-728f-4a56-a30e-4010cf26afce&pd_rd_w=jLFUs&pd_rd_wg=q5to1&pf_rd_p=292df443-b323-44ae-8b40-9a666975b8b5&pf_rd_r=04ZPH3E1M21A9MYD33GR&qid=1784990424&sbo=RZvfv%2F%2FHxDF%2BO5021pAnSA%3D%3D&sprefix=living%2Broom%2Bfinds%2Bmodern%2Blook%2Caps%2C225&sr=1-4-6024b2a3-78e4-4fed-8fed-e1613be3bcce-spons&aref=Hm84pADvx6&sp_csd=d2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM&th=1&linkCode=ll2&tag=darraghcummin-20&linkId=420bdd76ce3937dce7116e32ae00c0ff&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "Automatic Capsule Cocktail Maker",
+    category: "lifestyle",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/Automatic-Cocktail-Maker-Capsules-Built/dp/B0G5ZQHTMW?crid=2GDG23106BSPM&dib=eyJ2IjoiMSJ9.pUV1O4aL6UuPCBC1lndBdSR8deic0MBb-3YWOi2jREfk0F0Px3GsKswV_5TqI-VEEQNfRcIqMkZamrlnRY8OupWm7Ue57XRq7tTe9p0lX5tnsA1FEGgr_IOo6GWkO7Xt8w-VKgLA-P_Lg9NnTuaRchyqy34GVV1P2SnAdTjSuXSAf8FQKGWJzOncTzCKIMQcQf20sM0bIRkdjnwnLYB-NwO1ce43hxuRjaEvtygjh6CII9N5DXvEdt4x1fEq_v0DRUicH5-QwcnHDO5AF4wxq1laKnxtFPXR41LRYwqpKO4.dYjlJBk6CBYcy3DQMTwENPspGt7JDEb5_lQEHqXmNyw&dib_tag=se&keywords=cocktail%2Bmaker%2Bmachine&qid=1785349213&sprefix=cocktail%2Bmaker%2Caps%2C233&sr=8-7&th=1&gaOptInStatus=true&ascsubtag=srctok-5de4f43ae47d2a50&btn_type=ss&btn_ref=srctok-5de4f43ae47d2a50&linkCode=ll2&tag=darraghcummin-20&linkId=d854ffd2587af440abe7dd80bb748b32&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "MhyTogn Geometric Industrial Chandelier",
+    category: "home",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/MhyTogn-Industrial-Chandelier-Geometric-Lighting/dp/B0BFWLC9WX?crid=10K32OQJGQCM4&dib=eyJ2IjoiMSJ9.WltPv3KQxvvx2Fy0SLt-FGAGFSaPPTD0s0wFw3FrhkIp8k1z6xZY2hMM6iFeS5WlGbFPqEM_pILLRbNZNItJWkIkdQPWoV8v6DjkWweXXtnZyIYTD0ij7DLB9v3-_BNB8wkU3IrKguQKLkylrrcd8zV0VswW9tWbdkJ1Dz3xnGnSbqsZY5bwZdmX71qYOyUBAnFDnv9OEfdWzI9IyXIkwdYuB-UU-8zOaLPsPQJTJN7lxVcijz9kCfnuv5Fjos8ePD1766nhn0zzt6cmVpSZtKdaA3yeRSnTpSO59sH6tdw.XFT5IZFZ8UKAhdhXfFlDvyOiXN8iQFWlLkWQPoQpf1A&dib_tag=se&keywords=living%2Broom%2Bfinds%2Bmodern%2Blook&qid=1784990424&sprefix=living%2Broom%2Bfinds%2Bmodern%2Blook%2Caps%2C225&sr=8-12-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9tdGY&th=1&linkCode=ll2&tag=darraghcummin-20&linkId=81f088b886231bcf6095e6953ae50afa&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "QPAU Motorized Inflatable Water Float",
+    category: "lifestyle",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/QPAU-Inflatable-Float-Adults-Ride/dp/B0DZP1CXKD?crid=2SR8OGSUT6EV1&dib=eyJ2IjoiMSJ9.EL4kDqAZu6_eeIA8BAX6iapxEgDPgMzcA8d5Xz5i4BH0Prb4KFhOksyUVLVonUgn_ZO3w8mG05b3OHubOEKoRyUzp_9m4BLspdgpYbc9VJKBPKAWoqK0ZLg0dy7w6Y5QfPRpF7_w6EzXi1Sv8kx4T7Ipr6Q4VoMjyXRMAbqdnvfIWH954IsOCGBW5cxM2PULWpfNmQ4oFhFx5EbkSIGU1ynoGw2GEw_jCVWTAdENPP79RybyQEFQfSTWGZek-M2l_PkaV9dcKh-nqYKMCZzbNprtN15ZwCIGeI9oJHkY2ug.vGyzco93Nk7tk1sFkLQcSQTXTXZzachmHnLSlGHQjy4&dib_tag=se&keywords=inflatable%2Bmotorized%2Bcar%2Bboat&qid=1784989639&sprefix=inflatable%2Bmotor%2Caps%2C4236&sr=8-10&th=1&linkCode=ll2&tag=darraghcummin-20&linkId=bfb61c04d94f7613c9e084faed3a9f52&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "iWALK Family-Sized Portable Charger",
+    category: "lifestyle",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/iWALK-Portable-Charging-Multiple-Family-Sized/dp/B0BN81XGG7?crid=TDKBKWBVIC56&dib=eyJ2IjoiMSJ9.VNXjxpEao8VS05AHjRGoRgzn7wnZZy3544-ZeJuW5bsz5ik1lBBujAO5luG9QQ_o1NezUgz1fBHusZmUgjE44n7d0IaA81Ip4zc3fhgtFHcFBJ3We4K95kD-u8n7BcK8W74KrhhRV3idRYN0hGLh-QOhT_stw3fQuXzQeT7MGhT9YqqJDTnKtWFnk13Zb4O72VyPWqsRU-A0y-x93GFHnj2vvuTMOq9tc9FPhVcBI54.GkrDExq_HPWRGaydmqMFtKl2szsdCLeh_-saoZkM2J0&dib_tag=se&keywords=portable%2Bpower%2Bbanks%2Bcolours&qid=1784990021&sprefix=portable%2Bpower%2Caps%2C15005&sr=8-4-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9tdGY&th=1&linkCode=ll2&tag=darraghcummin-20&linkId=b0b46586521c1c3752fc484dbd4dcacb&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "Adorabby Countertop Cereal Dispenser",
+    category: "kitchen",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/Adorabby-Dispenser-Countertop-Containers-Organization/dp/B0GXFD53VW?crid=34X5UITJI2YWY&dib=eyJ2IjoiMSJ9.HcvWZtpDkCxaBIJwKfAexezfEqawgnvEdHWKTqKfbNNQGLMzuGS6rxiv4YVJbPnyFcq4CIfMyE18VQyJ_ZjUs5YoFK1krkLH2X1a600PyCA0iJALTL0ZsCoZ9oSUzhO6vUhXWWvKXbbeRvpSk6bN0sHhyHTWp0U24fX2zflc_lYUIYWqsMkxFT5grC45Rsf9ZJq6c2XWhBxyf_dySeNXUWEPCOPd-ZbvpTSOgOg1QMh879F8ETZE06BgIxEZ53MAMYbvcBW-pBl3q-s6zEc7MUqh_k4EAuPvC2OkJKu9DvU.zFDMBqmerSHEiElUNjxpN_rs5J7dS9RCxPLSCkbLcBM&dib_tag=se&keywords=cereal%2Bdispenser&qid=1784909342&sprefix=cereal%2Bdis%2Caps%2C288&sr=8-1-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&th=1&linkCode=ll2&tag=darraghcummin-20&linkId=d5113fbbcb85e511efab2914cfce2e04&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "Giant Plush Bean Bag Chair",
+    category: "home",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/Giant-Plush-Chair-Adults-Armrests/dp/B0DQXZX6HB?dib=eyJ2IjoiMSJ9.3-KtrI0h5gaYw2p_cCKRYP61WJcT-L230lNLx2lnS81aZ2YIe5j-vjA3IK4H-JvYd1U5YsY6JSu7cBwgMM34zcLZoBgmrXs9SmhbF6GdQDNajb0ZxGDcdLpXgg2j6sc9YLJ6XaU5dpQBQjjwTrH6f4AkUHzdNcPOj-e7VLlcHVgoenqBsLyTQOOtzC6nAZUpIKMlqlqyawQhy--7zpRDm5wpceDYmVxzzfcDFe7wbPidNNPLj_GhoBe77d69QFj_rreUUets_-MWG8Qz_Id0x0jy9QeMx0G7ZnMAQ9QbOhY.TBnUmu1gfV5kTABi8z0L7OJv6cqdmTKpGTEv4xY4jEQ&dib_tag=se&keywords=living%2Broom%2Bfurniture%2Bbean%2Bbag&qid=1784909743&sr=8-3-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&th=1&linkCode=ll2&tag=darraghcummin-20&linkId=853d1e58e51ca4d7383fea8103e488b3&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "JOYROOM Nightstand Cable Organizer",
+    category: "home",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/Adjustable-Management-JOYROOM-Organizer-Nightstand/dp/B0CH159ZNT?crid=2IMWASMGML1TH&dib=eyJ2IjoiMSJ9.TBAbwBVQozh5m1EvHI2mu4qIrUmYIFaBBKf4alqTNC-NbuXrRU5ct3p3p3rDQeB0GfT-DQACauaLkGXxF_myb736jWDMr5YTOeksZUnXlhoRVe5VcpfgtDOI4HXy0_KJ1NzoNYeI3_oBlY9Z3CiSIkLzXtyKWllXsaDmIORZLd-kqrrvjDKjU1e9-BYlcvhKL5Bx3swQJH6X6n-NNBSt-wVeZOqLuO3gY3MQwvgzVHw.qoNlK7wBZMM2dFYYXqXSf0nwGxrggTeo4gaLL3ikkeM&dib_tag=se&keywords=cable%2Bmanagement&qid=1784988160&sprefix=cable%2Bam%2Caps%2C314&sr=8-6-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9tdGY&th=1&linkCode=ll2&tag=darraghcummin-20&linkId=c9d819971d0dd623648d8fb806529961&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "Motorized Floating Pool Lounger",
+    category: "lifestyle",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/Motorized-Adults-Rechargeable-Floating-Backrest/dp/B0GSFSVTP7?crid=2SR8OGSUT6EV1&dib=eyJ2IjoiMSJ9.EL4kDqAZu6_eeIA8BAX6iapxEgDPgMzcA8d5Xz5i4BH0Prb4KFhOksyUVLVonUgn_ZO3w8mG05b3OHubOEKoRyUzp_9m4BLspdgpYbc9VJKBPKAWoqK0ZLg0dy7w6Y5QfPRpF7_w6EzXi1Sv8kx4T7Ipr6Q4VoMjyXRMAbqdnvfIWH954IsOCGBW5cxM2PULWpfNmQ4oFhFx5EbkSIGU1ynoGw2GEw_jCVWTAdENPP79RybyQEFQfSTWGZek-M2l_PkaV9dcKh-nqYKMCZzbNprtN15ZwCIGeI9oJHkY2ug.vGyzco93Nk7tk1sFkLQcSQTXTXZzachmHnLSlGHQjy4&dib_tag=se&keywords=inflatable+motorized+car+boat&qid=1784989376&sprefix=inflatable+motor%2Caps%2C4236&sr=8-2&linkCode=ll2&tag=darraghcummin-20&linkId=6c0ca932273d993631cc60adcafa98a9&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "Expandable Countertop Spice Organizer",
+    category: "kitchen",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/Organizer-Countertop-Cabinets-Seasoning-Expandable/dp/B09K7CVJ89?crid=YPS7YNZBETTM&dib=eyJ2IjoiMSJ9.-N1xD6KNENdIcZpVYxSThHHM9blh_I-OSP9YMkkjQQApTlKkHDAJs-0IuY0hJKdt4md1wAgTSXoxxnWIRwGTo55Ammv0-cLi-GYXfYrfp519L_RrvrEz41mpYYqlGk0B0TPMB9lJ0gk__Whde6fDL3IJgoDvPakx96vNu8kctLeS8eXTfchEv63CFxZde8zrg8LJbCCZdJJQuFYrCs5mySU6KD5U4BcDNLgmwDVT6yCHN50XvkP9ejVD_QchKIDzzmCTNhy7lYY-cfaF_kQbuVTJMhqa0CwNM-1O3V5WyO0.RKmba-x0da3L6oKCOWDwkLRIEII94egQ7bzU_F6_XBM&dib_tag=se&keywords=spice%2Borganization%2Bfor%2Bdrawer&qid=1784908280&sprefix=spice%2Borganization%2Bfor%2Bdraw%2Caps%2C221&sr=8-2-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&th=1&linkCode=ll2&tag=darraghcummin-20&linkId=106169f4443f5be48a6e1e1695b4aee0&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "Ninja Double-Basket Air Fryer",
+    category: "kitchen",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/Ninja-DZ201-2-Basket-Technology-Stainless/dp/B089TQWJKK?ie=UTF8&s=psc&crid=1RP9UDO9KCWAY&sprefix=double%2Bair%2Bf%2Caps%2C1201&keywords=double%2Bair%2Bfryer%2Bwith%2B2%2Bbaskets&dib_tag=se&ASIN=B089TQWJKK&dib=eyJ2IjoiMSJ9.dcGAqaJPGQHUQ4xmSIGP7Lt_9H6r29IsTue63usMTwLOpZonKOqd0gxZkPmkQVjfBQ-_VPkPmT5boUZ5UbA1DygD9Bxw9y5LtKZEUv4WJYhy7PPLULy_PU-7NJihw-dPzF6hWNUHjCjMtk_WM0pfsiV_Y0-8UMruIlRZpUGgFyycpccU2V_CB4StEDGK9oOGtVsSYSkj4BK7WxvdqtrrjrPCY5wVB0J_HTNrZTMUZq0.9lKhPKbhsDhaOvI_W9zBetTmTOoDLEkikSuGSE-Sayc&qid=1783712626&sr=8-4&th=1&linkCode=ll2&tag=darraghcummin-20&linkId=22b2c14d4b3d218788254acd88221d14&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "FATORRI Burl Wood Round Coffee Table",
+    category: "home",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/FATORRI-Coffee-Woodern-Mid-Century-Bedroom/dp/B0GF1D4SKF?crid=2S1J7L2PPRL4Q&dib=eyJ2IjoiMSJ9.wlxMs_LNCU9JBFIfHpy8BQ7NyYrbGlqgDN7joFkXEORbIo8iolHSHO5hKXdYUFOjJJJFrKhM0PZNIHB4IWoWqqY0H8wbD8nI0_EyG4itfc2Hn5gzl8P3RVviUzAaRxVkcnMtwE5w6dK5pd-QhwcZQcl0LxMJx96pNc4xbYc5zcmvi-kDN5tYvxM7MTL2vfjs6TUIjeUOWYEeSdv57-QxKTX3zSRQSuKXV9g0rky2ldMgNyGyIYaUFRxWUUBhb7xQ-U8Tswiun5u6IYE0fDkPqtOMOgADbBlC42_J4xIec7s.4pUB5PyGm31yWgi9oZmihTD_xMDG3o5qbOxT7OWbkdk&dib_tag=se&keywords=burl%2Bwood%2Bround%2Bcoffee%2Btable&qid=1783714797&sprefix=burl%2Bwood%2Bround%2Bcoffee%2Btable%2Caps%2C369&sr=8-4&th=1&linkCode=ll2&tag=darraghcummin-20&linkId=b4cccaca7e6e83f2c6db653229404a35&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "Bamboo Folding Room Divider Screen",
+    category: "home",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/Divider-Separation-Partitions-Dividers-Freestanding/dp/B0DXL2CM81?content-id=amzn1.sym.292df443-b323-44ae-8b40-9a666975b8b5%3Aamzn1.sym.292df443-b323-44ae-8b40-9a666975b8b5&crid=39O7I0C2EBXTD&cv_ct_cx=Bamboo%2Bfolding%2Bscreens%2Band%2Brattan%2Bpieces%2Bfor%2Bzoning%2Bopen-plan%2Brooms&keywords=Bamboo%2Bfolding%2Bscreens%2Band%2Brattan%2Bpieces%2Bfor%2Bzoning%2Bopen-plan%2Brooms&nsdOptOutParam=true&pd_rd_i=B0DXL3XTCL&pd_rd_r=d22869d3-49be-41f9-8a6e-a2f31131c29f&pd_rd_w=zmUSQ&pd_rd_wg=Oxe7t&pf_rd_p=292df443-b323-44ae-8b40-9a666975b8b5&pf_rd_r=9W4BGD0F7QW6GEWRRNX1&qid=1783716140&sbo=RZvfv%2F%2FHxDF%2BO5021pAnSA%3D%3D&sprefix=bamboo%2Bfolding%2Bscreens%2Band%2Brattan%2Bpieces%2Bfor%2Bzoning%2Bopen-plan%2Brooms%2Caps%2C655&sr=1-3-6024b2a3-78e4-4fed-8fed-e1613be3bcce-spons&aref=xN8r814A9n&sp_csd=d2lkZ2V0TmFtZT1zcF9zZWFyY2hfdGhlbWF0aWM&th=1&linkCode=ll2&tag=darraghcummin-20&linkId=c44029666ff8ce7c6fc6eb2ebdf10542&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+  {
+    name: "CRISLEX Bladeless Wearable Neck Fan",
+    category: "home",
+    price: "",
+    image: "",
+    url: "https://www.amazon.com/CRISLEX-Portable-Bladeless-Operated-Wearable/dp/B0DSB3M4MR?dib=eyJ2IjoiMSJ9.zwraCkP10K8ZaBVzmpcmeFP2psADMQ5vP0GbwoELYatKNqqKL0D0upg2bO3Lm9kN9F_-vxH9dmVkoAtZbSiEwqkctqsY_EBPjZd6beXMzm6nqT2SE7bay3TSxmad0zKNZpg3LAwN9TX-4VzcJKsZ0w21voVrmloDdZ5AYZ3jBXwvTrlCAxHCQI3TyH_b_wxVp7kb34CPSOhSizArSJV79VLlO5qtymtQdSq8RR3GdL3APMUTNbq_MoGpet3cu-q2VrNRl0yIQ5Uspbvh6jFBtN632KwUYGjdXhdpM1sJBoM.54qAxR7cw0r2sVHqvVwxMb4pRQfSFoCsdss2MqmJCbE&dib_tag=se&keywords=neck%2Bfan&qid=1783709995&sr=8-7&th=1&linkCode=ll2&tag=darraghcummin-20&linkId=50418d4bcea7cdea0c0627979741549e&language=en_US&gaOptInStatus=true&ref_=as_li_ss_tl"
+  },
+];
+/* ============================================================================ */
+
+const CATEGORY_LABELS = {
+  home: "Home",
+  kitchen: "Kitchen",
+  lifestyle: "Lifestyle"
+};
+
+const grid = document.getElementById('grid');
+const filtersEl = document.getElementById('filters');
+let activeFilter = 'all';
+
+function placeholderSVG(){
+  return `<div class="placeholder-box">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <rect x="3" y="5" width="18" height="14" rx="2"/>
+      <circle cx="8.5" cy="10" r="1.5"/>
+      <path d="M21 15l-5-5-4 4-3-3-6 6"/>
+    </svg>
+    <span>ADD PHOTO</span>
+  </div>`;
+}
+
+function cardHTML(p){
+  const img = p.image
+    ? `<img src="${p.image}" alt="${p.name}" loading="lazy">`
+    : placeholderSVG();
+  const price = p.price
+    ? `<div class="card-price">${p.price}</div>`
+    : `<div class="card-price unset">See price on Amazon</div>`;
+  return `
+    <a class="card" href="${p.url}" target="_blank" rel="nofollow sponsored noopener">
+      <div class="card-image">${img}</div>
+      <div class="card-body">
+        <div class="card-title">${p.name}</div>
+        ${price}
+        <span class="card-link">Shop on Amazon</span>
+      </div>
+    </a>`;
+}
+
+function render(){
+  const items = activeFilter === 'all'
+    ? PRODUCTS
+    : PRODUCTS.filter(p => p.category === activeFilter);
+
+  grid.innerHTML = items.length
+    ? items.map(cardHTML).join('')
+    : `<div class="empty-state">No products in this category yet.</div>`;
+}
+
+function buildFilters(){
+  const cats = Array.from(new Set(PRODUCTS.map(p => p.category)));
+  const all = ['all', ...cats];
+  filtersEl.innerHTML = all.map(c => {
+    const label = c === 'all' ? 'All' : (CATEGORY_LABELS[c] || c);
+    return `<button class="filter-btn${c === activeFilter ? ' active' : ''}" data-cat="${c}">${label}</button>`;
+  }).join('');
+
+  filtersEl.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeFilter = btn.dataset.cat;
+      filtersEl.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      render();
+    });
+  });
+}
+
+buildFilters();
+render();
+</script>
+
+</body>
+</html>
